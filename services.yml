@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  rest:
+    image: rest-image
+    depends_on:
+      - mysql
+    volumes:
+      - ./rest_servis:/servidor
+    ports:
+      - "3000:3000"
+
+  soap:
+    image: soap-image
+    depends_on:
+      - mysql
+    volumes:
+      - ./soap_servis:/servidor
+    ports:
+      - "3555:3555"
+
+
+  mysql:
+    image: bd-image
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-datos:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root1
+
+  servicio-web:
+    image: app-image
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any 
+    volumes:
+      - type: bind
+        source: C:\Users\IPF\Desktop\insti\Seminario\Volumenes_tp8_servicios_swarm\app_servis\index.php
+        target: /var/www/html/index.php
+    ports:
+      - "3002:80"
